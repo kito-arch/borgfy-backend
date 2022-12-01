@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const caseRoutes = require("./cases");
+const blogRoutes = require("./blogs");
 
 
 
@@ -14,6 +15,7 @@ router.get("/uploads/:name", (req, res)=>{
 })
 
 router.use("/cases", caseRoutes);
+router.use("/blogs", blogRoutes);
 
 
 module.exports = router;
