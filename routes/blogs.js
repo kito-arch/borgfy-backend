@@ -160,4 +160,37 @@ router.get("/:id", (req, res)=>{
     })
 })
 
+
+router.post("/delete/:id", (req, res)=>{
+    pool.getConnection((err, connection)=>{
+        if (err) {
+            console.log('query connect error!', err);
+            res.status(500).send("Server Internal Error");
+        } 
+        else{
+            connection.query(`DELETE FROM blog_sections WHERE blog_id = ANY (SELECT id FROM blogs WHERE link = '${req.params.id}');`, (err, rows) => {
+                if (err) {
+                    console.log(err);
+                    res.status(500).send("Server Internal Error");
+                    connection.release();
+                    return;
+                 }
+                 else {
+                    connection.query(`DELETE FROM blogs WHERE link = '${req.params.id}'`, (e, r)=>{
+                        if (e) {
+                            console.log(e);
+                            res.status(500).send("Server Internal Error");
+                            return;
+                        }
+                        else{
+                            res.send("Deleted Successfully")
+                        }
+                    })
+                 }
+             connection.release();
+             });
+        }
+    })
+})
+
 module.exports = router
